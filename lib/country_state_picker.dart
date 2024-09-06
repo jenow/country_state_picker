@@ -170,16 +170,17 @@ class _CountryStatePickerState extends State<CountryStatePicker> {
               widget.onCountryChanged(ct.name);
             }),
 
-        /**
+        if (widget.onStateChanged != null) ...[
+          /**
          * DIVIDER TO SEPRATE THE TWO FIELDS
          */
-        widget.divider ?? const SizedBox(height: 10),
+          widget.divider ?? const SizedBox(height: 10),
 
-        // LAGE FOR STATE PICKER
-        widget.stateLabel ?? const Label(title: "State"),
+          // LAGE FOR STATE PICKER
+          widget.stateLabel ?? const Label(title: "State"),
 
-        //STATE PICKER
-        if (widget.onStateChanged != null)
+          //STATE PICKER
+
           DropdownButtonFormField<String>(
               validator: widget.stateValidator,
               decoration: widget.inputDecoration ?? defaultInputDecoration,
@@ -232,6 +233,7 @@ class _CountryStatePickerState extends State<CountryStatePicker> {
                   widget.onStateChanged!(st);
                 }
               }),
+        ],
       ],
     );
   }
