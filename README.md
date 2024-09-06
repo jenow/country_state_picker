@@ -13,7 +13,7 @@ This package provides drop-down items for selecting countries and states.
 | Param            | Required | Default |       Type        |                             Description                             |
 | ---------------- | :------: | :-----: | :---------------: | :-----------------------------------------------------------------: |
 | onCountryChanged |    ✅    |  null   | Function (String) |                      Handle Country Selection                       |
-| onStateChanged   |    ✅    |  null   | Function (String) |                       Handle State Selection                        |
+| onStateChanged   |    ❌    |  null   | Function (String) |                       Handle State Selection                        |
 | onStateTap       |    ❌    |  null   |       void        |                      Handle Input onTap Event                       |
 | onStateTap       |    ❌    |  null   |       void        |                      Handle Input onTap Event                       |
 | flagSize         |    ❌    |  22.0   |      double       |                 Size of Country Flag on Input Label                 |
@@ -39,7 +39,7 @@ This package provides drop-down items for selecting countries and states.
    ```
    import 'package:country_state_picker/country_state_picker.dart';
    ```
-2. Provide at least the required params
+2. Provide at least the required params (onStateChanged optional)
 
    ```
    CountryStatePicker(
@@ -53,6 +53,8 @@ This package provides drop-down items for selecting countries and states.
     ),
 
    ```
+
+   If `onStateChanged` is not provided, the state field will not be displayed.
 
 ### Todo
 

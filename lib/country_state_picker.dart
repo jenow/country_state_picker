@@ -13,7 +13,7 @@ class CountryStatePicker extends StatefulWidget {
   const CountryStatePicker({
     Key? key,
     required this.onCountryChanged,
-    required this.onStateChanged,
+    this.onStateChanged,
     this.onCountryTap,
     this.onStateTap,
     this.flagSize,
@@ -35,7 +35,7 @@ class CountryStatePicker extends StatefulWidget {
   }) : super(key: key);
 
   final ValueChanged<String> onCountryChanged;
-  final ValueChanged<String> onStateChanged;
+  final ValueChanged<String>? onStateChanged;
 
   final ValidatorFunction? countryValidator;
   final ValidatorFunction? stateValidator;
@@ -73,8 +73,7 @@ class _CountryStatePickerState extends State<CountryStatePicker> {
 
   /// GET COUNTRY AND CITIES FROM JSON
   Future fetchFile() async {
-    var res = await rootBundle.loadString(
-        'packages/country_state_picker/lib/utils/country-state.json');
+    var res = await rootBundle.loadString('packages/country_state_picker/lib/utils/country-state.json');
     return jsonDecode(res);
   }
 
@@ -120,8 +119,7 @@ class _CountryStatePickerState extends State<CountryStatePicker> {
                       const SizedBox(width: 10),
                       Text(
                         selectedCountry!.name,
-                        style: widget.hintTextStyle ??
-                            const TextStyle(color: Colors.black, fontSize: 16),
+                        style: widget.hintTextStyle ?? const TextStyle(color: Colors.black, fontSize: 16),
                       ),
                     ],
                   )
@@ -181,62 +179,59 @@ class _CountryStatePickerState extends State<CountryStatePicker> {
         widget.stateLabel ?? const Label(title: "State"),
 
         //STATE PICKER
-
-        DropdownButtonFormField<String>(
-            validator: widget.stateValidator,
-            decoration: widget.inputDecoration ?? defaultInputDecoration,
-            hint: state != null
-                ? Row(
-                    children: [
-                      Text(
-                        state!,
-                        style: widget.hintTextStyle ??
-                            const TextStyle(color: Colors.black, fontSize: 16),
-                      ),
-                    ],
-                  )
-                : selectedCountry != null && selectedCountry!.states.isEmpty
-                    ? Text(widget.noStateFoundText ?? "No States Found")
-                    : hintText(
-                        widget.stateHintText ?? 'Choose State',
-                        style: widget.hintTextStyle,
-                      ),
-            dropdownColor: widget.dropdownColor ?? Colors.grey.shade100,
-            elevation: widget.elevation ?? 0,
-            isExpanded: widget.isExpanded ?? true,
-            items: selectedCountry == null
-                ? []
-                : [
-                    // MAP STATES OF SELECTED COUNTRY
-                    ...selectedCountry!.states
-                        .map(
-                          (state) => DropdownMenuItem(
-                            value: state.name,
-                            child: Row(
-                              children: [
-                                Text(
-                                  state.name,
-                                  style: widget.itemTextStyle ??
-                                      const TextStyle(
-                                          color: Colors.black, fontSize: 16),
-                                ),
-                              ],
+        if (widget.onStateChanged != null)
+          DropdownButtonFormField<String>(
+              validator: widget.stateValidator,
+              decoration: widget.inputDecoration ?? defaultInputDecoration,
+              hint: state != null
+                  ? Row(
+                      children: [
+                        Text(
+                          state!,
+                          style: widget.hintTextStyle ?? const TextStyle(color: Colors.black, fontSize: 16),
+                        ),
+                      ],
+                    )
+                  : selectedCountry != null && selectedCountry!.states.isEmpty
+                      ? Text(widget.noStateFoundText ?? "No States Found")
+                      : hintText(
+                          widget.stateHintText ?? 'Choose State',
+                          style: widget.hintTextStyle,
+                        ),
+              dropdownColor: widget.dropdownColor ?? Colors.grey.shade100,
+              elevation: widget.elevation ?? 0,
+              isExpanded: widget.isExpanded ?? true,
+              items: selectedCountry == null
+                  ? []
+                  : [
+                      // MAP STATES OF SELECTED COUNTRY
+                      ...selectedCountry!.states
+                          .map(
+                            (state) => DropdownMenuItem(
+                              value: state.name,
+                              child: Row(
+                                children: [
+                                  Text(
+                                    state.name,
+                                    style: widget.itemTextStyle ?? const TextStyle(color: Colors.black, fontSize: 16),
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-                        )
-                        .toList(),
-                  ],
-            onTap: widget.onStateTap,
-            onChanged: (value) {
-              var st = selectedCountry!.states
-                  .firstWhere((e) => e.name == value)
-                  .name;
+                          )
+                          .toList(),
+                    ],
+              onTap: widget.onStateTap,
+              onChanged: (value) {
+                var st = selectedCountry!.states.firstWhere((e) => e.name == value).name;
 
-              setState(() {
-                state = st;
-              });
-              widget.onStateChanged(st);
-            }),
+                setState(() {
+                  state = st;
+                });
+                if (widget.onStateChanged != null) {
+                  widget.onStateChanged!(st);
+                }
+              }),
       ],
     );
   }
